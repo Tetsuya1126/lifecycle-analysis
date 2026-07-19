@@ -1,0 +1,63 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lifecycle-analysis"
+version = "0.1.0"
+description = "Lifecycle analysis library"
+readme = "README.md"
+
+license = {text = "MIT"}
+authors = [
+    {name = "Tetsuya1126", email = "1193886012+Tetsuya1126@users.noreply.github.com"}
+]
+
+requires-python = ">=3.11"
+
+dependencies = [
+    "numpy>=1.26",
+    "pandas>=2.2"
+]
+
+
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Operating System :: OS Independent",
+]
+
+keywords = [
+    "lifecycle",
+    "analysis",
+    "timeseries",
+    "pandas",
+    "numpy",
+]
+
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+]
+
+[project.urls]
+Homepage = "https://github.com/Tetsuya1126/lifecycle-analysis"
+Repository = "https://github.com/Tetsuya1126/lifecycle-analysis"
+Issues = "https://github.com/Tetsuya1126/lifecycle-analysis/issues"
+
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+exclude = [
+    "tests",
+    "log",
+    "docs",
+]
