@@ -1,3 +1,6 @@
+![Python](https://img.shields.io/badge/python-3.11+-blue)
+![License](https://img.shields.io/github/license/Tetsuya1126/lifecycle-analysis)
+
 # lifecycle-analysis
 
 Lifecycle analysis library for time-series event data.
