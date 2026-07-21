@@ -46,21 +46,28 @@
 ライブラリは責務ごとに4層へ分離しています。
 
 ```
+  Phase 1
 Raw Events
     │
     ▼
+
+  Phase 2
 LifecycleBuilder
     │
     ▼
 Lifecycle
     │
     ▼
+
+  Phase 3
 AnalysisBuilder
     │
     ▼
 AnalysisData
     │
     ▼
+
+  Phase 4
 LifecycleAnalyzer
 ```
 

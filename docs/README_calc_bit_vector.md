@@ -70,7 +70,17 @@ Transition
 生成方法
 
 ```python
-transition = presence.astype(int).diff()
+
+    previous = presence.shift(
+        periods=1,
+        fill_value=False,
+    )
+
+    transition = (
+        presence.astype("int8")
+        - previous.astype("int8")
+    )
+
 ```
 
 ---
@@ -102,7 +112,7 @@ State
 生成方法
 
 ```python
-state = transition.cumsum()
+state = transition.cumsum().astype("int8")
 ```
 
 State が 0 より大きい間を「存在中」とみなします。
@@ -183,15 +193,10 @@ NOT
 
 ↓
 
-cumsum()
-
-0000123333344444
-
-↓
-
-> 0
+cummax()
 
 0000111111111111
+
 ```
 
 終了側
@@ -215,9 +220,9 @@ NOT
 
 ↓
 
-cumsum()
+cummax()
 
-0000111111223334
+0000111111111111
 
 ↓
 
@@ -249,13 +254,12 @@ Trusted Mask
 生成コード
 
 ```python
-left = (~presence).cumsum() > 0
+left = (~presence).cummax()
 
 right = (
     (~presence.iloc[::-1])
-    .cumsum()
+    .cummax()
     .iloc[::-1]
-    > 0
 )
 
 trusted_mask = left & right
@@ -284,13 +288,59 @@ analysis_mask =
 
 ---
 
-## Segment ID
+## Segment Length
 
-Lifetime の立ち上がりを検出し、
-各ライフサイクルへ番号を付与します。
+Boundary の開始・終了位置から、
+各ライフサイクルの継続時間（Segment Length）を求めます。
 
 ```
-Lifetime
+Active
+
+011001110
+
+↓
+
+Boundary Start
+
+010001000
+
+Boundary End
+
+000100010
+
+↓
+
+Segment Length
+
+Segment 1 : 2
+Segment 2 : 3
+```
+
+生成イメージ
+
+```
+start = np.flatnonzero(boundary_start)
+end = np.flatnonzero(boundary_end)
+
+segment_length = end - start
+```
+
+最後まで継続している Segment は、観測終了位置を終端として補完します。
+
+```
+if len(start) > len(end):
+    end = np.append(end, n_rows)
+```
+
+開始・終了位置を利用することで、各 Segment の長さをベクトル演算で効率よく計算しています。
+
+
+## Segment ID
+
+各 Segment に連番を付与した識別子です。
+
+```
+Active
 
 011001110
 
@@ -301,38 +351,11 @@ Segment ID
 011002220
 ```
 
-生成イメージ
-
-```python
-segment_id = (
-    lifetime
-    &
-    ~lifetime.shift(fill_value=False)
-).cumsum()
-```
+Segment ID は各 Segment を一意に識別するために利用されます。
 
 ---
 
-## Segment Length
 
-Segment ID ごとの長さを集計します。
-
-```
-Segment ID
-
-011002220
-
-↓
-
-Segment Length
-
-Segment 1 : 2
-Segment 2 : 3
-```
-
-groupby によりベクトル演算で求めています。
-
----
 
 以上の変換を組み合わせることで、
 
