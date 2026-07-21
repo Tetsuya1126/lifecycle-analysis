@@ -1,9 +1,10 @@
+# Lifecycle Analysis
+
 [![Tests](https://github.com/Tetsuya1126/lifecycle-analysis/actions/workflows/test.yaml/badge.svg)](https://github.com/Tetsuya1126/lifecycle-analysis/actions/workflows/test.yaml)
 ![Python](https://img.shields.io/badge/python-3.11+-blue)
 ![License](https://img.shields.io/github/license/Tetsuya1126/lifecycle-analysis)
 
 
-# Lifecycle Analysis
 
 > **Lifecycle Analysis は、「観測されたデータ」と「解析可能なデータ」を分離することで、再現性と信頼性の高いライフサイクル解析を実現します。**
 
@@ -100,37 +101,39 @@ from lifecycle import (
     LifecycleAnalysis,
 )
 
-N = 100
-rng = np.random.default_rng(42)
 
-events = pd.DataFrame(
-    {
-        "datetime": pd.Timestamp("2026-01-01")
-        + pd.to_timedelta(
-            np.sort(rng.integers(0, 86400, size=N)),
-            unit="s",
-        ),
-        "object": rng.choice(
-            [
-                f"192.168.2.{i}" for i in range(1, 256)
-            ],
-            size=N,            
-        ),
-        "event": rng.choice(
-            [
-                "login",
-                "logout",
-            ],
-            size=N,
-            p=[0.5,0.5],
-        ),
-    }
-)
+def create_event(N=100):
+    rng = np.random.default_rng(42)
 
+    return pd.DataFrame(
+        {
+            "datetime": pd.Timestamp("2026-01-01")
+            + pd.to_timedelta(
+                np.sort(rng.integers(0, 86400, size=N)),
+                unit="s",
+            ),
+            "object": rng.choice(
+                [
+                    f"192.168.2.{i}" for i in range(1, 256)
+                ],
+                size=N,            
+            ),
+            "event": rng.choice(
+                [
+                "INVALID_SNI",
+                "ASSURED",
+                ],
+                size=N,
+                p=[0.7,0.3],
+            ),
+        }
+    )
+
+events = create_event()
 
 analysis = LifecycleAnalysis(
     df      = events,
-    event   = "login",
+    event   = "INVALID_SNI",
     trusted = True,
     ip_col = "object"
 )
@@ -143,22 +146,21 @@ print(analysis.summary().head())
 
 ```
  python3 ./quick_start.py 
-             datetime         object   event
-0 2026-01-01 01:03:04  192.168.2.213  logout
-1 2026-01-01 01:31:53   192.168.2.51  logout
-2 2026-01-01 01:37:48  192.168.2.206   login
-3 2026-01-01 01:49:56    192.168.2.2  logout
-4 2026-01-01 02:03:45  192.168.2.204  logout
+             datetime         object        event
+0 2026-01-01 01:03:04  192.168.2.213      ASSURED
+1 2026-01-01 01:31:53   192.168.2.51  INVALID_SNI
+2 2026-01-01 01:37:48  192.168.2.206  INVALID_SNI
+3 2026-01-01 01:49:56    192.168.2.2      ASSURED
+4 2026-01-01 02:03:45  192.168.2.204      ASSURED
 
-                     duration  active_duration  samples  segments  ...  good  started_before ended_after complete
-192.168.2.104 0 days 00:04:24              1.0        1         1  ...  True           False       False     True
-192.168.2.105 0 days 00:04:24              1.0        1         1  ...  True           False       False     True
-192.168.2.111 0 days 00:04:24              1.0        1         1  ...  True           False       False     True
-192.168.2.112 0 days 00:04:24              1.0        1         1  ...  True           False       False     True
-192.168.2.118 0 days 00:04:24              1.0        1         1  ...  True           False       False     True
+                     duration  active_duration  samples  segments  segment_count  coverage_ratio  ... duplicate orphan  good  started_before  ended_after  complete
+192.168.2.104 0 days 00:04:24              1.0        1         1              1             1.0  ...     False  False  True           False        False      True
+192.168.2.105 0 days 00:08:48              1.0        2         2              2             1.0  ...     False  False  True           False        False      True
+192.168.2.107 0 days 00:04:24              1.0        1         1              1             1.0  ...     False  False  True           False        False      True
+192.168.2.111 0 days 00:04:24              1.0        1         1              1             1.0  ...     False  False  True           False        False      True
+192.168.2.112 0 days 00:04:24              1.0        1         1              1             1.0  ...     False  False  True           False        False      True
 
 [5 rows x 15 columns]
-
 ```
 
 ---
@@ -325,8 +327,11 @@ Lifecycle Analysis は、大規模な時系列データを対象として設計�
 
 ```
 docs/
-├── design.md
-└── README_detail.md
+├── README_calc_bit_vector.md
+├── README_detail.md
+├── README_files.md
+└── README_models.md
+
 ```
 
 設計資料では、

@@ -54,8 +54,6 @@ def _presence_from_events(
         index   : datetime
         columns : ip
         values  : bool
-
-        
     """
 
     return (

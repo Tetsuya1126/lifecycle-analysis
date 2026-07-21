@@ -115,6 +115,7 @@ def _transition_from_presence(
          0 : No change
         -1 : OUT
     """
+    
     previous = presence.shift(
         periods=1,
         fill_value=False,
