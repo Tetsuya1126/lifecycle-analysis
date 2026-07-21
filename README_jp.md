@@ -1,3 +1,8 @@
+[![Tests](https://github.com/Tetsuya1126/lifecycle-analysis/actions/workflows/test.yaml/badge.svg)](https://github.com/Tetsuya1126/lifecycle-analysis/actions/workflows/test.yaml)
+![Python](https://img.shields.io/badge/python-3.11+-blue)
+![License](https://img.shields.io/github/license/Tetsuya1126/lifecycle-analysis)
+
+
 # Lifecycle Analysis
 
 > **Lifecycle Analysis は、「観測されたデータ」と「解析可能なデータ」を分離することで、再現性と信頼性の高いライフサイクル解析を実現します。**

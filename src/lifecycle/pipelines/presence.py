@@ -71,19 +71,7 @@ def _presence_from_events(
         .astype(bool)
         .sort_index()
     )
-    '''
-    return (
-        df.loc[df[event_col] == event, [time_col, ip_col]]
-        .assign(present=True)
-        .pivot(
-            index=time_col,
-            columns=ip_col,
-            values="present",
-        )
-        .notna()
-        .sort_index()
-    )
-    '''
+
 
 # test OK
 def _presence_resample(

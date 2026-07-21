@@ -3,6 +3,7 @@ log/
 
 *trial*/
 *old*/
+*memo*
 
 # Byte-compiled
 __pycache__/

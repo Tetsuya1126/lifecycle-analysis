@@ -9,6 +9,7 @@ def to_df(arr, like):
         index=like.index,
         columns=like.columns,
     )
+
 def to_series(arr, like):
     return pd.Series(
         arr,
