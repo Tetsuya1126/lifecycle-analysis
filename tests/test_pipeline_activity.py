@@ -1,5 +1,3 @@
-import numpy as np
-import pandas as pd
 import pandas.testing as pdt
 
 from lifecycle.pipelines.presence import (
@@ -8,8 +6,6 @@ from lifecycle.pipelines.presence import (
 )
 
 from lifecycle.pipelines.activity import (
-#    _lifetime_from_state,
-#    _boundary_from_state,
     _activity_from_state,
 )
 
@@ -128,8 +124,6 @@ def test_boundary_from_state(sample_presence):
 
 
 
-'''
-'''
 def test_segment_id(sample_lifecycle):
 
     state = sample_lifecycle.state
@@ -167,8 +161,6 @@ def test_segment_length(sample_lifecycle):
     activity = _activity_from_state(state)
 
     length = activity.segment_length
-
-#    length = _segment_length(segment)
 
     #
     # NORMAL
@@ -226,5 +218,3 @@ def test_segment_length(sample_lifecycle):
     assert length.loc[("ZIGZAG", 2)] == 1
     assert length.loc[("ZIGZAG", 3)] == 1
     assert length.loc[("ZIGZAG", 4)] == 1
-'''
-'''

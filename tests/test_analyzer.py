@@ -137,6 +137,51 @@ def test_min_segment_duration(sample_analysis_data):
 
     assert minimum["ZIGZAG"] == pd.Timedelta(minutes=1)
 
+
+def test_mean_segment_duration_seconds(sample_analysis_data):
+
+    analyzer = LifecycleAnalyzer(sample_analysis_data)
+
+    mean = analyzer.mean_segment_duration_seconds()
+
+    assert mean["NORMAL"] == 180
+
+    assert mean["SPLIT"] == 120
+
+    assert mean["PULSE"] == 60
+
+    assert mean["PULSE2"] == 150
+
+    assert mean["ZIGZAG"] == 60
+
+def test_max_segment_duration_seconds(sample_analysis_data):
+
+    analyzer = LifecycleAnalyzer(sample_analysis_data)
+
+    maximum = analyzer.max_segment_duration_seconds()
+
+    assert maximum["NORMAL"] == 180
+
+    assert maximum["SPLIT"] == 120
+
+    assert maximum["PULSE2"] == 180
+
+    assert maximum["ZIGZAG"] == 60
+
+def test_min_segment_duration(sample_analysis_data):
+
+    analyzer = LifecycleAnalyzer(sample_analysis_data)
+
+    minimum = analyzer.min_segment_duration_seconds()
+
+    assert minimum["NORMAL"] == 180
+
+    assert minimum["SPLIT"] == 120
+
+    assert minimum["PULSE2"] == 120
+
+    assert minimum["ZIGZAG"] == 60
+
 def test_segment_duration_f(sample_analysis_data_f):
 
     analyzer = LifecycleAnalyzer(sample_analysis_data_f)
