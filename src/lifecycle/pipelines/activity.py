@@ -9,8 +9,6 @@ from ..model import (
 from .pandas_converter import (
     to_array,
     to_df,
-    to_series,
-    to_pandas,
 )
 
 #
@@ -31,22 +29,6 @@ def _find_active(state):
 #
 # boundry
 #
-def __find_boundary(active, prev):
-    boundary_start = (
-        ~prev
-        & active
-    )
-
-    boundary_end = (
-        prev
-        & ~active
-    )
-
-    return (
-        boundary_start,
-        boundary_end,
-    )
-
 def _find_boundary(active, prev):
     return (
         active & ~prev,
@@ -57,16 +39,16 @@ def _find_boundary(active, prev):
 # segment length
 #
 def _segment_position(
-    boundary_start: pd.Series,
-    boundary_end: pd.Series,
+    boundary_start: np.array,
+    boundary_end: np.array,
+    i: int,
 ) -> tuple[np.ndarray, np.ndarray]:
     """
     1列分のSegment開始・終了位置を取得
     """
-
-    start = np.flatnonzero(boundary_start.to_numpy())
-    end = np.flatnonzero(boundary_end.to_numpy())
-
+    start = np.flatnonzero(boundary_start[:, i])
+    end = np.flatnonzero(boundary_end[:, i])
+    
     return start, end
 
 
@@ -115,6 +97,7 @@ def _append_segments(
     )
 
 
+# test OK
 def _segment_length_from_boundary(
     boundary_start: np.ndarray,
     boundary_end: np.ndarray,
@@ -129,8 +112,11 @@ def _segment_length_from_boundary(
 
     for i, name in enumerate(like.columns):
 
-        start = np.flatnonzero(boundary_start[:, i])
-        end = np.flatnonzero(boundary_end[:, i])
+        start, end = _segment_position(
+            boundary_start,
+            boundary_end,
+            i,
+        )
 
         seg_length = _segment_lengths(
             start,
@@ -152,6 +138,7 @@ def _segment_length_from_boundary(
         np.asarray(lengths, dtype=np.int16),
     )
 
+# test OK
 def _activity_from_state(
     state: pd.DataFrame,
 ) -> ActivityAnalysis:

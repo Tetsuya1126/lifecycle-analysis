@@ -14,6 +14,10 @@ class LifecycleAnalyzer:
 
     # test OK
     def duration(self) -> pd.Series:
+        """
+        Sum of Duration
+        
+        """
 
         samples = self.activity.lifetime.sum()
 
@@ -28,6 +32,7 @@ class LifecycleAnalyzer:
 
         Index:
             lifecycle, segment_id
+        Return: Timedelta
         """
 
         return pd.to_timedelta(
@@ -36,11 +41,6 @@ class LifecycleAnalyzer:
             unit="s",
         )
 
-    def _segment_duration_samples(self) -> pd.Series:
-
-        return self.activity.segment_length.astype(
-            "int32"
-        )
     
     # test OK
     def mean_segment_duration(self):
@@ -70,7 +70,13 @@ class LifecycleAnalyzer:
         )
 
 
+    def _segment_duration_samples(self) -> pd.Series:
 
+        return self.activity.segment_length.astype(
+            "int32"
+        )
+
+    # test OK
     def mean_segment_duration_seconds(self) -> pd.Series:
         """
         Mean segment duration in seconds.
@@ -83,8 +89,11 @@ class LifecycleAnalyzer:
             * self.analysis_data.sample_interval
         )
 
-
+    # test OK
     def max_segment_duration_seconds(self) -> pd.Series:
+        """
+        Max segment duration in seconds.
+        """
     
         return (
             self._segment_duration_samples()
@@ -93,8 +102,11 @@ class LifecycleAnalyzer:
             * self.analysis_data.sample_interval
         )
 
-
+    # test OK
     def min_segment_duration_seconds(self) -> pd.Series:
+        """
+        Min segment duration in seconds.
+        """
 
         return (
             self._segment_duration_samples()
@@ -103,7 +115,7 @@ class LifecycleAnalyzer:
             * self.analysis_data.sample_interval
         )
 
-
+    # test OK
     def segment_count(self) -> pd.Series:
         count = (
             self.activity
@@ -118,27 +130,6 @@ class LifecycleAnalyzer:
             fill_value=0,
         )
 
-    '''
-    def age(self, now=None):
-        """
-        analysis開始から現在までの経過時間
-        """
-        pass
-
-
-    def active(self, now=None):
-        """
-        現在も生存しているか
-        """
-        return self.analysis_data.end is None
-
-
-    def inactive(self, now=None):
-        """
-        終了済みか
-        """
-        return not self.active()
-    '''
     
     def active_duration(self) -> pd.Series:
         return (
@@ -151,7 +142,7 @@ class LifecycleAnalyzer:
     # ==========================================================
     # Distribution
     # ==========================================================
-
+    # test OK
     def lifetime_distribution(self) -> pd.Series:
         """
         Distribution of lifecycle duration.
@@ -168,6 +159,7 @@ class LifecycleAnalyzer:
         return self.duration()
 
 
+    # test OK
     def segment_distribution(self) -> pd.Series:
         """
         Distribution of segment duration.
